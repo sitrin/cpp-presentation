@@ -48,10 +48,10 @@ int main() {
     const uint32_t A = 0x343FD;
     const uint32_t C = 0x269EC3;
 
-    const size_t NUM_UPDATES = 100'000'000'00;
+    const size_t NUM_UPDATES = 1'000'000'00;
 
-    // 256 bit seed
-    const std::array<uint32_t, 8> SEED {{ 'C','O','L','U','M','B','I','A' }};
+    constexpr size_t SEED_SIZE = 8; // number of 32-bit seed values to seed with
+    const std::array<uint32_t, SEED_SIZE> SEED {{ 'C','O','L','U','M','B','I','A' }};
     
     // initialize state to SEED
     auto state = SEED; 
@@ -72,8 +72,8 @@ int main() {
     
     // Now do vectorized
     const auto SEED_v = _mm256_stream_load_si256((__m256i const *)(SEED.data()));
-    const auto    A_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, 8>{{A,A,A,A,A,A,A,A}}.data()));
-    const auto    C_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, 8>{{C,C,C,C,C,C,C,C}}.data()));
+    const auto    A_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, SEED.size()>{{A,A,A,A,A,A,A,A}}.data()));
+    const auto    C_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, SEED.size()>{{C,C,C,C,C,C,C,C}}.data()));
 
     // as above for non-vectorized, initialize state to SEED
     auto state_v = SEED_v;
@@ -84,7 +84,7 @@ int main() {
     }
     diff = std::chrono::system_clock::now() - start;
     
-    std::array<uint32_t,8> state_v_as_array;
+    std::array<uint32_t,SEED.size()> state_v_as_array;
     _mm256_storeu_si256((__m256i*) state_v_as_array.data(), state_v);
     
     // output result of vectorized approach
