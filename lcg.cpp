@@ -23,8 +23,8 @@ inline uint16_t high_transform(uint32_t n) {
 // no modulus is neccessary because overflow acts
 // as the implied modulus for VSC++
 // (nice explanation at https://stackoverflow.com/a/14788283)
-inline void update_state(uint32_t & state, uint32_t a, uint32_t c) {//, uint32_t m) {
-    state = (a * state) + c ;//% m;
+inline void update_state(uint32_t & state, uint32_t a, uint32_t c) {
+    state = (a * state) + c ;
 }
 
 // virtually the same as update status for non-vectorized args (as above)
@@ -59,7 +59,7 @@ int main() {
     auto start = std::chrono::system_clock::now();
     for(size_t i=0; i<SEED_SIZE; ++i) {
         for(size_t j = 0; j < NUM_UPDATES; ++j) {
-            update_state(state[i], A, C);//, M);
+            update_state(state[i], A, C);
         }
     }
     std::chrono::duration<double> diff = std::chrono::system_clock::now() - start;
