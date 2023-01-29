@@ -72,8 +72,8 @@ int main() {
     
     // Now do vectorized
     const auto SEED_v = _mm256_stream_load_si256((__m256i const *)(SEED.data()));
-    const auto A_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, 8>{{A,A,A,A,A,A,A,A}}.data()));
-    const auto C_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, 8>{{C,C,C,C,C,C,C,C}}.data()));
+    const auto    A_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, 8>{{A,A,A,A,A,A,A,A}}.data()));
+    const auto    C_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, 8>{{C,C,C,C,C,C,C,C}}.data()));
 
     // as above for non-vectorized, initialize state to SEED
     auto state_v = SEED_v;
