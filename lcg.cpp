@@ -57,7 +57,7 @@ int main() {
     auto state = SEED; 
     
     auto start = std::chrono::system_clock::now();
-    for(size_t i=0; i<SEED.size(); ++i) {
+    for(size_t i=0; i<SEED_SIZE; ++i) {
         for(size_t j = 0; j < NUM_UPDATES; ++j) {
             update_state(state[i], A, C);//, M);
         }
@@ -72,8 +72,8 @@ int main() {
     
     // Now do vectorized
     const auto SEED_v = _mm256_stream_load_si256((__m256i const *)(SEED.data()));
-    const auto    A_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, SEED.size()>{{A,A,A,A,A,A,A,A}}.data()));
-    const auto    C_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, SEED.size()>{{C,C,C,C,C,C,C,C}}.data()));
+    const auto    A_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, SEED_SIZE>{{A,A,A,A,A,A,A,A}}.data()));
+    const auto    C_v = _mm256_stream_load_si256((__m256i const *)(std::array<uint32_t, SEED_SIZE>{{C,C,C,C,C,C,C,C}}.data()));
 
     // as above for non-vectorized, initialize state to SEED
     auto state_v = SEED_v;
@@ -84,7 +84,7 @@ int main() {
     }
     diff = std::chrono::system_clock::now() - start;
     
-    std::array<uint32_t,SEED.size()> state_v_as_array;
+    std::array<uint32_t,SEED_SIZE> state_v_as_array;
     _mm256_storeu_si256((__m256i*) state_v_as_array.data(), state_v);
     
     // output result of vectorized approach
